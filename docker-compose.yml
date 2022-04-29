@@ -1,0 +1,33 @@
+version: '3'
+services:
+ db:
+  image: mysql:5.7
+  container_name: mysql-dbnode
+  security_opt:
+    - seccomp:unconfined
+  ports:
+   - "3310:3306"
+  volumes:
+   - "./.data/db:/var/lib/mysql"
+  restart: always
+  environment:
+    MYSQL_ROOT_PASSWORD: secret
+    MYSQL_DATABASE: nodeApp
+    MYSQL_USER: kevin
+    MYSQL_PASSWORD: secret
+
+ app:
+  depends_on:
+   - db
+  image: kevinmartinez2/nodejs-mysql-app
+  links:
+    - db
+  ports:
+   - "3000:3000"
+  restart: always
+  environment:
+    MYSQL_HOST: db
+    MYSQL_USER: kevin
+    MYSQL_PASSWORD: secret
+    MYSQL_DB: nodeApp
+ 
